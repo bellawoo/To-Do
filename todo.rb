@@ -1,35 +1,64 @@
-def add_item
-	
+require 'pry'
+
+require './db/setup'
+require './lib/all'
+
+class List
+	def add_item
+		
+	end
+
+	def set_due_date
+		
+	end
+
+	def done?
+		
+	end
+
+	def view_incomplete_items
+		
+	end
+
+	def view_single_list
+		
+	end
+
+	def view_all_items
+		
+	end
+
+	def next_item
+		
+	end
+
+	def search_for_item
+		
+	end
+
+	def user_login
+		
+	end
 end
 
-def set_due_date
-	
-end
+listicize = List.new
+command = ARGV.shift
 
-def done?
-	
-end
+case command
+		when "add" #will also need to initialize setting the due date and creating a new list if needed
+			username = `whoami`.chomp
+			listicize.add_item ARGV.first, username
+		when "list"
 
-def view_incomplete_items
-	
-end
+		when "list [list_name]"
 
-def view_single_list
-	
-end
+		when "list all"
 
-def view_all_items
-	
-end
+		when "next"
 
-def next_item
-	
-end
+		when "done"
 
-def search_for_item
-	
-end
+		when "change due date"
 
-def user_login
-	
+		when "search"
 end
