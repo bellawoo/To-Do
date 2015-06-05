@@ -36,9 +36,9 @@ class List
 		
 	end
 
-	def user_login
+	# def user_login
 		
-	end
+	# end
 end
 
 listicize = List.new
@@ -49,16 +49,17 @@ case command
 			username = `whoami`.chomp
 			listicize.add_item ARGV.first, username
 		when "list"
-
+			listicize.view_incomplete_items
 		when "list [list_name]"
-
+			listicize.view_single_list
 		when "list all"
-
+			listicize.view_all_items
 		when "next"
-
+			listicize.next_item
 		when "done"
-
+			listicize.done?
 		when "change due date"
-
+			listicize.set_due_date
 		when "search"
+			listicize.search_for_item
 end
