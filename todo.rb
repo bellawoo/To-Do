@@ -4,9 +4,11 @@ require './db/setup'
 require './lib/all'
 
 class ToDoList
+	attr_reader :user
 	def initialize
 		puts "Hello! Please log-in by providing your username."
 		user = gets.chomp
+		@user = User.where(name: user).first_or_create!
 		puts "Thank you, #{user}. Select from the following commands."
 	end
 
@@ -39,44 +41,71 @@ class ToDoList
 		when "search"
 			listicize.search_for_item
 		else
-			puts "I don't know what #{command} means."
+			puts "#{@user}I don't know what #{command} means."
 		end
 	end
 
-	def create_entry list_name, entry, due=nil, username
-		user = User.where(name: name).first_or_create!
-		user.items.create! list_id: list_name, item_name: entry, due: due, completed: false
+	def create_entry list_name, entry, due=nil
+		puts "What list would you like to add an entry to?"
+		list_choice = gets.chomp.downcase
+		puts "Enter a brief description of your to-do item."
+		entry = gets.chomp.downcase
+		puts "When is this due? It's OK if you don't know it right now. You can always change it."
+		initial_due_date = Date.parse(gets.chomp)
+		@user.items.create! list_name: list_choice, item_name: entry, due: initial_due_date, completed: false
 	end
 
 	def view_incomplete_items
-		Item.where(completed: true)
+		results = @user.items.where(completed: false)
+		resulting_list
 	end
 
 	def view_single_list list_name
-		List.where(list_name: list_name)
+		puts "List name?"
+		list_choice = gets.chomp.downcase
+		results = @user.items.where(list_name: list_choice)
+		resulting_list
 	end
 
 	def view_all_items
-		List.all
+		results = @user.tasks.all
+		resulting_list
 	end
 
 	def next_item
-		
+		resulting_list = @user.items.where.not(due: nil)
+		resulting_list
 	end
 
 	def set_due_date
-		
+		view_single_list
+		puts "What is the ID of the item that needs to have its due date updated?"
+		id_choice = gets.chomp
+		puts "And what is the new due date?"
+		new_due_date = Date.parse(gets.chomp)
+		changing_item = @user.items.find(id_choice.to_i)
+		changing_item.due = new_due_date
+		changing_item.save
 	end
 
 	def done?
-		selected_item = #the item that the user wants to mark complete
-		selected_item.mark_completed!
+		puts "What item did you complete?"
+		now_done = gets.chomp
+		matching_item = @user.items.where("item_name LIKE ?", "%{now_done}")
+		matching_item.mark_completed
 	end
 
 	def search_for_item
 		puts "Enter keyword to search"
-		terms = gets.chomp
-		Item.where('entry LIKE "terms"')
+		term = gets.chomp
+		results = @user.items.where("item_name LIKE ?", "%{term}%")
+		resulting_list
+	end
+
+	def resulting_list results
+		results.each do |r|
+			puts "ID #{r.id} | User ID #{r.user_name} | To-do: #{r.item_name} | On list: #{r.list_name} | Due #{r.due}"
+		end
 	end
 
 	# def user_login
