@@ -1,6 +1,6 @@
 class users < ActiveRecord::Migration
   def change
-  	create_table "users" |u|
+  	create_table "users" do |u|
   		u.string "name"
 	  end
   end

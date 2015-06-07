@@ -1,6 +1,6 @@
-class lists < ActiveRecord::Migration
+class List < ActiveRecord::Migration
   def change
-  	create_table "lists" |l|
+  	create_table "lists" do |l|
   		l.integer "user_id"
   		l.string "list_name"
 	  end

@@ -7,9 +7,9 @@ class ToDoList
 	attr_reader :user
 	def initialize
 		puts "Hello! Please log-in by providing your username."
-		user = gets.chomp
-		@user = User.where(name: user).first_or_create!
-		puts "Thank you, #{user}. Select from the following commands."
+		name = gets.chomp
+		@user = User.where(name: name).first_or_create!
+		puts "Thank you, #{name}. Select from the following commands."
 	end
 
 	def get_command
@@ -52,7 +52,7 @@ class ToDoList
 		entry = gets.chomp.downcase
 		puts "When is this due? It's OK if you don't know it right now. You can always change it."
 		initial_due_date = Date.parse(gets.chomp)
-		@user.items.create! list_name: list_choice, item_name: entry, due: initial_due_date, completed: false
+		@user.items.create! list_name: list_choice, item_name: entry, due_date: initial_due_date, completed: false
 	end
 
 	def view_incomplete_items
@@ -84,7 +84,7 @@ class ToDoList
 		puts "And what is the new due date?"
 		new_due_date = Date.parse(gets.chomp)
 		changing_item = @user.items.find(id_choice.to_i)
-		changing_item.due = new_due_date
+		changing_item.due_date = new_due_date
 		changing_item.save
 	end
 

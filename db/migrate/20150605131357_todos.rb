@@ -1,6 +1,6 @@
 class todos < ActiveRecord::Migration
   def change
-  	create_table "todos" |t|
+  	create_table "todos" do |t|
   		t.string "item"
   		t.date "due_date"
   		t.boolean "completed"
