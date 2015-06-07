@@ -113,6 +113,6 @@ class ToDoList
 	# end
 end
 
-listicize = List.new
+listicize = ToDoList.new
 listicize.get_command
 
