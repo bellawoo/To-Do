@@ -23,58 +23,58 @@ class ToDoList
 		command = gets.chomp.downcase
 
 		case command
-		when "add" #will also need to initialize setting the due date and creating a new list if needed
-			username = `whoami`.chomp
-			listicize.create_entry
+		when "add" 
+			create_entry
 		when "list"
-			listicize.view_incomplete_items
+			view_incomplete_items
 		when "list [list_name]"
-			listicize.view_single_list
+			view_single_list
 		when "list all"
-			listicize.view_all_items
+			view_all_items
 		when "next"
-			listicize.next_item
+			next_item
 		when "mark complete"
-			listicize.done?
+			done?
 		when "change due date"
-			listicize.set_due_date
+			set_due_date
 		when "search"
-			listicize.search_for_item
+			search_for_item
 		else
 			puts "#{@user}I don't know what #{command} means."
 		end
 	end
 
-	def create_entry list_name, entry, due=nil
+	def create_entry
 		puts "What list would you like to add an entry to?"
 		list_choice = gets.chomp.downcase
+		finds_list = List.where(list_name: list_choice).first_or_create!
 		puts "Enter a brief description of your to-do item."
 		entry = gets.chomp.downcase
-		puts "When is this due? It's OK if you don't know it right now. You can always change it."
+		puts "When is this due?"
 		initial_due_date = Date.parse(gets.chomp)
-		@user.items.create! list_name: list_choice, item_name: entry, due_date: initial_due_date, completed: false
+		@user.items.create! list_id: finds_list, item_name: entry, due_date: initial_due_date, completed: false
 	end
 
 	def view_incomplete_items
 		results = @user.items.where(completed: false)
-		resulting_list
+		resulting_list results
 	end
 
 	def view_single_list list_name
 		puts "List name?"
 		list_choice = gets.chomp.downcase
 		results = @user.items.where(list_name: list_choice)
-		resulting_list
+		resulting_list results
 	end
 
 	def view_all_items
 		results = @user.tasks.all
-		resulting_list
+		resulting_list results
 	end
 
 	def next_item
 		resulting_list = @user.items.where.not(due: nil)
-		resulting_list
+		resulting_list results
 	end
 
 	def set_due_date
@@ -99,7 +99,7 @@ class ToDoList
 		puts "Enter keyword to search"
 		term = gets.chomp
 		results = @user.items.where("item_name LIKE ?", "%{term}%")
-		resulting_list
+		resulting_list results
 	end
 
 	def resulting_list results
